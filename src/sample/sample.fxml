@@ -48,10 +48,10 @@
             <Label layoutX="565.0" layoutY="300.0" text="y0 = " />
             <Label layoutX="565.0" layoutY="343.0" text="X  = " />
             <Label layoutX="565.0" layoutY="386.0" text="N  = " />
-            <TextField layoutX="595.0" layoutY="254.5" prefHeight="20.0" prefWidth="40.0" promptText="1" fx:id="x0Input" />
-            <TextField fx:id="y0Input" layoutX="595.0" layoutY="297.5" prefHeight="20.0" prefWidth="40.0" promptText="3" />
-            <TextField fx:id="XInput" layoutX="595.0" layoutY="340.5" prefHeight="20.0" prefWidth="40.0" promptText="4" />
-            <TextField fx:id="NInput" layoutX="595.0" layoutY="383.5" prefHeight="20.0" prefWidth="40.0" promptText="50" />
+            <TextField layoutX="595.0" layoutY="254.5" prefHeight="20.0" prefWidth="40.0" text="1" fx:id="x0Input" />
+            <TextField fx:id="y0Input" layoutX="595.0" layoutY="297.5" prefHeight="20.0" prefWidth="40.0" text="3" />
+            <TextField fx:id="XInput" layoutX="595.0" layoutY="340.5" prefHeight="20.0" prefWidth="40.0" text="10" />
+            <TextField fx:id="NInput" layoutX="595.0" layoutY="383.5" prefHeight="20.0" prefWidth="40.0" text="12" />
             <LineChart fx:id="ErrorsChart" layoutX="665.0" layoutY="40.0" prefHeight="500.0" prefWidth="550.0">
               <xAxis>
                 <NumberAxis side="BOTTOM" />
@@ -79,8 +79,8 @@
             </Label>
             <Label layoutX="974.0" layoutY="681.0" text="Nmax = " />
             <Label layoutX="974.0" layoutY="637.0" text="Nmin = " />
-            <TextField fx:id="NminInput" layoutX="1043.0" layoutY="631.0" prefHeight="31.0" prefWidth="46.0" />
-            <TextField fx:id="NmaxInput" layoutX="1043.0" layoutY="677.0" prefHeight="31.0" prefWidth="46.0" />
+            <TextField fx:id="NminInput" layoutX="1043.0" layoutY="631.0" prefHeight="31.0" prefWidth="46.0" text="10" />
+            <TextField fx:id="NmaxInput" layoutX="1043.0" layoutY="677.0" prefHeight="31.0" prefWidth="46.0" text="30"/>
          </children>
       </AnchorPane>
    </content>

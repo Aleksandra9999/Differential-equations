@@ -7,6 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 
+import java.math.BigDecimal;
+
 
 public class Controller {
 
@@ -56,12 +58,12 @@ public class Controller {
         Maxerrors.setCreateSymbols(false);
         double x0,y0,X;
         int N, Nmin, Nmax;
-        x0 = Double.parseDouble(x0Input.getText());
-        y0 = Double.parseDouble(y0Input.getText());
-        X = Double.parseDouble(XInput.getText());
-        N = Integer.parseInt(NInput.getText());
-        Nmin = Integer.parseInt(NminInput.getText());
-        Nmax = Integer.parseInt(NmaxInput.getText());
+        x0 = Double.parseDouble(x0Input.getText().toString());
+        y0 = Double.parseDouble(y0Input.getText().toString());
+        X = Double.parseDouble(XInput.getText().toString());
+        N = Integer.parseInt(NInput.getText().toString());
+        Nmin = Integer.parseInt(NminInput.getText().toString());
+        Nmax = Integer.parseInt(NmaxInput.getText().toString());
 
         euler = Euler(x0, y0, X, N);
         impeuler = ImpEuler(x0, y0, X, N);
@@ -102,20 +104,15 @@ public class Controller {
 
         MaxErrors(x0, y0, X, Nmin, Nmax);
 
-        if (eulerbox.isSelected()) {
             maxerrorseuler.setName("Euler's method");
             Maxerrors.getData().add(maxerrorseuler);
-        }
 
-        if (impeulerbox.isSelected()) {
             maxerrorsimpeuler.setName("Improved Euler's method");
             Maxerrors.getData().add(maxerrorsimpeuler);
-        }
 
-        if (rungekuttabox.isSelected()) {
             maxerrorsrungekutta.setName("Runge-Kutta method");
             Maxerrors.getData().add(maxerrorsrungekutta);
-        }
+
 
     }
 
@@ -132,11 +129,13 @@ public class Controller {
 
         while (curX <= x) {
             serie.getData().add(new XYChart.Data<>(curX, curY));
-            errorseuler.getData().add(new XYChart.Data<>(curX, Math.abs(curY - function(curX))));
-            if (eumax < Math.abs(curY - function(curX))) eumax = Math.abs(curY - function(curX));
+            double temp = Math.abs(curY - function(curX, x0, y0));
+            errorseuler.getData().add(new XYChart.Data<>(curX, temp));
+            if (eumax < temp) eumax = temp;
+            curY = (double) Math.round(curY *100000000)/100000000;
+            curX = (double) Math.round(curX *100000000)/100000000;
             curY += h * funcxy(curX, curY);
             curX += h;
-            curX = (double) Math.round(curX *100000000)/100000000;
         }
 
         return serie;
@@ -149,20 +148,23 @@ public class Controller {
         impeumax = 0;
         XYChart.Series serie = new XYChart.Series();
         errorsimpeuler = new XYChart.Series();
-        double n = Math.abs(x - x0) / N;
+        double h = Math.abs(x - x0) / N;
 
         double a,b;
 
         while (curX <= x) {
 
             serie.getData().add(new XYChart.Data<>(curX, curY));
-            errorsimpeuler.getData().add(new XYChart.Data<>(curX, Math.abs(curY - function(curX))));
-            if (impeumax < Math.abs(curY - function(curX))) impeumax = Math.abs(curY - function(curX));
+            double temp = Math.abs(curY - function(curX, x0, y0));
+
+            errorsimpeuler.getData().add(new XYChart.Data<>(curX, temp));
+            if (impeumax < temp) impeumax = temp;
 
             a = funcxy(curX,curY);
-            b = n*funcxy(curX+n/2, curY+ n*a/2);
-            curX += n;
+            b = h*funcxy(curX+h/2, curY+ h*a/2);
+            curX += h;
             curX = (double) Math.round(curX *100000000)/100000000;
+            curY = (double) Math.round(curY *100000000)/100000000;
             curY += b;
         }
 
@@ -177,21 +179,23 @@ public class Controller {
         curY = y0;
         XYChart.Series serie = new XYChart.Series();
         errorsrungekutta = new XYChart.Series();
-        double n = Math.abs(x - x0) / N;
+        double h = Math.abs(x - x0) / N;
 
         while (curX <= x) {
             serie.getData().add(new XYChart.Data<>(curX, curY));
-            errorsrungekutta.getData().add(new XYChart.Data<>(curX, Math.abs(curY - function(curX))));
-            if (rkmax < Math.abs(curY - function(curX))) rkmax = Math.abs(curY - function(curX));
+            double temp = Math.abs(curY - function(curX, x0, y0));
+            errorsrungekutta.getData().add(new XYChart.Data<>(curX, temp));
+            if (rkmax < temp) rkmax = temp;
 
             k1 = funcxy(curX, curY);
-            k2 = funcxy(curX + n * 0.5, curY + n * k1 * 0.5);
-            k3 = funcxy(curX + n * 0.5, curY + n * k2 * 0.5);
-            k4 = funcxy(curX + n, curY + n * k3);
+            k2 = funcxy(curX + h * 0.5, curY + h * k1 * 0.5);
+            k3 = funcxy(curX + h * 0.5, curY + h * k2 * 0.5);
+            k4 = funcxy(curX + h, curY + h * k3);
 
-            curY += n / 6 * (k1 + 2 * k2 + 2 * k3 + k4);
-            curX += n;
+            curY += h / 6 * (k1 + 2 * k2 + 2 * k3 + k4);
+            curX += h;
             curX = (double) Math.round(curX *100000000)/100000000;
+            curY = (double) Math.round(curY *100000000)/100000000;
         }
 
         return serie;
@@ -203,14 +207,15 @@ public class Controller {
         curX = x0;
         curY = y0;
         XYChart.Series serie = new XYChart.Series();
-        double n = Math.abs(x - x0) / N;
+        double h = Math.abs(x - x0) / N;
 
         while (curX <= x) {
 
             serie.getData().add(new XYChart.Data<>(curX, curY));
-            curX += n;
+            curX += h;
             curX = (double) Math.round(curX *100000000)/100000000;
-            curY = function(curX);
+            curY = function(curX, x0, y0);
+            curY = (double) Math.round(curY *100000000)/100000000;
         }
 
         return serie;
@@ -218,12 +223,14 @@ public class Controller {
 
 
     public static double funcxy(double x, double y) {
-        return ((4/(x * x)) - (y/x) - (y * y));
+        return ((4/(x * x)) -  (y/x) - (y * y));
     }
 
 
-    public static double function(double x){
-        return (4/(5*Math.pow(x, 5) - x) + 2/x);
+    public static double function(double x, double x0, double y0){
+        double c;
+        c = (y0 + 2)/(4*y0*Math.pow(x0, 5) - 8*Math.pow(x0, 4));
+        return ((2+8*c*Math.pow(x, 4))/(x*(4*c*Math.pow(x, 4)-1)));
     }
 
 
